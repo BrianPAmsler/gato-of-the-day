@@ -133,3 +133,6 @@ dmypy.json
 
 # api keys
 discord-client-secret.txt
+
+# persistence file
+channels.json

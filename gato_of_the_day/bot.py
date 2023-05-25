@@ -12,8 +12,8 @@ from os import path
 
 SAVE_FILE = "channels.json"
 
-async def gato(channel):
-    embed = discord.Embed(title="Gato of the Day", description="")
+async def gato(channel, title="Gato of the Day"):
+    embed = discord.Embed(title=title, description="")
     embed.set_image(url=get_gato())
     await channel.send(embed=embed)
 
@@ -96,7 +96,7 @@ def run_bot():
             return
         
         if message.content.startswith("!gato"):
-            await gato(message.channel)
+            await gato(message.channel, title="Gato")
 
         if not message.author.guild_permissions.administrator:
             return

@@ -7,7 +7,7 @@ from time import strptime
 from discord.flags import Intents
 from pytz import timezone, utc
 from discord.ext import commands, tasks
-from gato_collector import get_gato
+from gato_collector import get_gato, get_perro
 from os import path
 
 SAVE_FILE = "channels.json"
@@ -15,6 +15,11 @@ SAVE_FILE = "channels.json"
 async def gato(channel, title="Gato of the Day"):
     embed = discord.Embed(title=title, description="")
     embed.set_image(url=get_gato())
+    await channel.send(embed=embed)
+
+async def perro(channel, title="Doggo of the Day"):
+    embed = discord.Embed(title=title, description="")
+    embed.set_image(url=get_perro())
     await channel.send(embed=embed)
 
 def to_utc(dt: datetime.datetime):
@@ -97,6 +102,9 @@ def run_bot():
         
         if message.content.startswith("!gato"):
             await gato(message.channel, title="Gato")
+
+        if message.content.startswith("!perro"):
+            await perro(message.channel, title="Doggo")
 
         if not message.author.guild_permissions.administrator:
             return

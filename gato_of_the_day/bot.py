@@ -100,12 +100,11 @@ def run_bot():
         if message.author == client.user:
             return
 
-        if not message.author.guild_permissions.administrator:
-            return
-
         parts = message.content.split(' ')
         
         if parts[0] == '!gotd':
+            if not message.author.guild_permissions.administrator:
+                return
             if len(parts) < 2:
                 return
             

@@ -99,12 +99,6 @@ def run_bot():
     async def on_message(message: discord.Message):
         if message.author == client.user:
             return
-        
-        if message.content.startswith("!gato"):
-            await gato(message.channel, title="Gato")
-
-        if message.content.startswith("!perro"):
-            await perro(message.channel, title="Doggo")
 
         if not message.author.guild_permissions.administrator:
             return
@@ -133,6 +127,10 @@ def run_bot():
                     await channel.send("Channel registered for Gato of the Day!")
                 else:
                     await channel.send("Channel already registered for given time!")
+        elif parts[0] == "!gato":
+            await gato(message.channel, title="Gato")
+        elif parts[0] == "!perro":
+            await perro(message.channel, title="Doggo")
 
     secret_file = open("discord-client-secret.txt", 'r')
     secret = secret_file.read().strip()

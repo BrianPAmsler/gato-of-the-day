@@ -9,6 +9,8 @@ from pytz import timezone, utc
 from discord.ext import commands, tasks
 from gato_collector import get_gato, get_perro
 from os import path
+import requests
+from os import system
 
 SAVE_FILE = "channels.json"
 
@@ -16,6 +18,26 @@ async def gato(channel, title="Gato of the Day"):
     embed = discord.Embed(title=title, description="")
     embed.set_image(url=get_gato())
     await channel.send(embed=embed)
+
+async def ishihara_gato(channel):
+    # downlaod gato
+    url: str = get_gato()
+    fname = "pre_input.jpg"
+    if url.endswith(".png"):
+        fname = "pre_input.png"
+    
+    data = requests.get(url, allow_redirects=True)
+    f = open(fname, 'wb')
+    f.write(data.content)
+    f.close()
+
+    # remove background
+    system('backgroundremover -i "' + fname + '" -o "input.png"')
+
+    # make ishihara
+    system('image_processing -i "input.png" -o "output.png')
+    
+    await channel.send(file=discord.File('output.png'))
 
 async def perro(channel, title="Doggo of the Day"):
     embed = discord.Embed(title=title, description="")
@@ -130,6 +152,8 @@ def run_bot():
             await gato(message.channel, title="Gato")
         elif parts[0] == "!perro":
             await perro(message.channel, title="Doggo")
+        elif parts[0] == "!ishigato":
+            await ishihara_gato(message.channel)
 
     secret_file = open("discord-client-secret.txt", 'r')
     secret = secret_file.read().strip()

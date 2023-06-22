@@ -136,3 +136,9 @@ discord-client-secret.txt
 
 # persistence file
 channels.json
+
+# temporary images
+pre_input.jpg
+pre_input.png
+input.png
+output.png

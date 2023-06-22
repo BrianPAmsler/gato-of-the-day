@@ -11,17 +11,22 @@ from gato_collector import get_gato, get_perro
 from os import path
 import requests
 from os import system
+import functools
+import typing
 
 SAVE_FILE = "channels.json"
+
+async def run_blocking(blocking_func: typing.Callable, client, *args, **kwargs) -> typing.Any:
+    """Runs a blocking function in a non-blocking way"""
+    func = functools.partial(blocking_func, *args, **kwargs) # `run_in_executor` doesn't support kwargs, `functools.partial` does
+    return await client.loop.run_in_executor(None, func)
 
 async def gato(channel, title="Gato of the Day"):
     embed = discord.Embed(title=title, description="")
     embed.set_image(url=get_gato())
     await channel.send(embed=embed)
 
-async def ishihara_gato(channel):
-    # downlaod gato
-    url: str = get_gato()
+def ishi(url: str):
     fname = "pre_input.jpg"
     if url.endswith(".png"):
         fname = "pre_input.png"
@@ -32,10 +37,17 @@ async def ishihara_gato(channel):
     f.close()
 
     # remove background
+    print("Removing background...")
     system('backgroundremover -i "' + fname + '" -o "input.png"')
 
     # make ishihara
+    print("Generating image...")
     system('image_processing -i "input.png" -o "output.png')
+
+async def ishihara_gato(channel, client):
+    # downlaod gato
+    print("Downloading image...")
+    await run_blocking(ishi, client, get_gato())
     
     await channel.send(file=discord.File('output.png'))
 
@@ -153,7 +165,7 @@ def run_bot():
         elif parts[0] == "!perro":
             await perro(message.channel, title="Doggo")
         elif parts[0] == "!ishigato":
-            await ishihara_gato(message.channel)
+            await ishihara_gato(message.channel, client)
 
     secret_file = open("discord-client-secret.txt", 'r')
     secret = secret_file.read().strip()

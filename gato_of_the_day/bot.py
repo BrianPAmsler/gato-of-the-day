@@ -42,7 +42,7 @@ def ishi(url: str):
 
     # make ishihara
     print("Generating image...")
-    system('image_processing -i "input.png" -o "output.png')
+    system('image_processing -i "input.png" -o "output.png"')
 
 async def ishihara_gato(channel, client):
     # downlaod gato

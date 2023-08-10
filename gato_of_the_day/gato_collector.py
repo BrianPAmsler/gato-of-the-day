@@ -20,3 +20,13 @@ def get_perro():
     content = json.loads(r.content.decode('utf-8'))[0]
 
     return content["url"]
+
+def get_carpincho():
+    r = requests.get("https://api.capy.lol/v1/capybara?json=true")
+    
+    if r.status_code != 200:
+        return None
+    
+    content = json.loads(r.content.decode('utf-8'))['data']
+    
+    return content["url"]

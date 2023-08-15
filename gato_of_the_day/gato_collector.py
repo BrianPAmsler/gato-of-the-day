@@ -53,11 +53,14 @@ def get_pic(name):
     
     return obj
 
-def is_valid_animal(animal):
-    return animal in api_info
+def is_valid_name(name):
+    return name in api_info
 
-def get_title(animal):
-    if animal not in api_info:
+def get_title(name):
+    if name not in api_info:
         return None
     
-    return api_info[animal]["title"]
+    info = api_info[name]
+    title = info["title"]
+
+    return title

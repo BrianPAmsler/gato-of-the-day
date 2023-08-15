@@ -30,3 +30,13 @@ def get_carpincho():
     content = json.loads(r.content.decode('utf-8'))['data']
     
     return content["url"]
+
+def get_zorro():
+    r = requests.get("https://randomfox.ca/floof/?ref=apilist.fun")
+    
+    if r.status_code != 200:
+        return None
+    
+    content = json.loads(r.content.decode('utf-8'))
+    
+    return content["image"]

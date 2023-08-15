@@ -7,7 +7,7 @@ from time import strptime
 from discord.flags import Intents
 from pytz import timezone, utc
 from discord.ext import commands, tasks
-from gato_collector import get_gato, get_perro, get_carpincho
+from gato_collector import get_gato, get_perro, get_carpincho, get_zorro
 from os import path
 import requests
 from os import system
@@ -22,13 +22,6 @@ async def run_blocking(blocking_func: typing.Callable, client, *args, **kwargs) 
     func = functools.partial(
         blocking_func, *args, **kwargs)  # `run_in_executor` doesn't support kwargs, `functools.partial` does
     return await client.loop.run_in_executor(None, func)
-
-
-async def gato(channel, title="Gato of the Day"):
-    embed = discord.Embed(title=title, description="")
-    embed.set_image(url=get_gato())
-    await channel.send(embed=embed)
-
 
 def ishi(url: str):
     fname = "pre_input.jpg"
@@ -48,7 +41,6 @@ def ishi(url: str):
     print("Generating image...")
     system('image_processing -i "input.png" -o "output.png"')
 
-
 async def ishihara_gato(channel, client):
     # downlaod gato
     print("Downloading image...")
@@ -56,24 +48,30 @@ async def ishihara_gato(channel, client):
 
     await channel.send(file=discord.File('output.png'))
 
+async def gato(channel, title="Gato of the Day"):
+    embed = discord.Embed(title=title, description="")
+    embed.set_image(url=get_gato())
+    await channel.send(embed=embed)
 
 async def perro(channel, title="Doggo of the Day"):
     embed = discord.Embed(title=title, description="")
     embed.set_image(url=get_perro())
     await channel.send(embed=embed)
 
-
 async def carpincho(channel, title="Capy"):
     embed = discord.Embed(title=title, description="")
     embed.set_image(url=get_carpincho())
     await channel.send(embed=embed)
 
+async def zorro(channel, title="Fox"):
+    embed = discord.Embed(title=title, description="")
+    embed.set_image(url=get_zorro())
+    await channel.send(embed=embed)
 
 def to_utc(dt: datetime.datetime):
     dt = dt.astimezone(utc)
 
     return datetime.time(hour=dt.hour, minute=dt.minute, tzinfo=utc)
-
 
 def make_cog(dt, channel: discord.TextChannel):
     time = to_utc(dt)
@@ -91,7 +89,6 @@ def make_cog(dt, channel: discord.TextChannel):
             await gato(self.channel)
 
     return GatoCog(channel)
-
 
 class GatoClient(discord.Client):
     def __init__(self, *, intents: Intents, **options: Any) -> None:
@@ -122,13 +119,11 @@ class GatoClient(discord.Client):
 
         persistence.save_client(self, SAVE_FILE)
 
-
 def to_dt(time: datetime.datetime, tz) -> datetime.datetime:
     dt = datetime.datetime.now()
     dt = dt.astimezone(tz)
 
     return dt.replace(hour=time.tm_hour, minute=time.tm_min, second=0, microsecond=0)
-
 
 def run_bot():
     intents = discord.Intents.default()
@@ -185,7 +180,9 @@ def run_bot():
         elif parts[0] == "!ishigato":
             await ishihara_gato(message.channel, client)
         elif parts[0] == "!carpincho":
-            await carpincho(message.channel, title="Capy")
+            await carpincho(message.channel)
+        elif parts[0] == "!zorro":
+            await zorro(message.channel)
 
     secret_file = open("discord-client-secret.txt", 'r')
     secret = secret_file.read().strip()

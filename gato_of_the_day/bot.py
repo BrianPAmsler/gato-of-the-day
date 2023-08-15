@@ -7,7 +7,7 @@ from time import strptime
 from discord.flags import Intents
 from pytz import timezone, utc
 from discord.ext import commands, tasks
-from gato_collector import get_pic, is_valid_animal, get_title
+from gato_collector import get_pic, is_valid_animal, get_title, load_api_info
 from os import path
 import requests
 from os import system
@@ -167,4 +167,5 @@ def run_bot():
     secret = secret_file.read().strip()
     secret_file.close()
 
+    load_api_info()
     client.run(secret)

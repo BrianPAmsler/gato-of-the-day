@@ -7,7 +7,7 @@ from time import strptime
 from discord.flags import Intents
 from pytz import timezone, utc
 from discord.ext import commands, tasks
-from gato_collector import get_pic, is_valid_animal, get_title, load_api_info
+from gato_collector import get_pic, is_valid_name, get_title, load_api_info
 from os import path
 import requests
 from os import system
@@ -160,7 +160,7 @@ def run_bot():
                     await channel.send("Channel already registered for given time!")
         elif parts[0] == "!ishigato":
             await ishihara_gato(message.channel, client)
-        elif parts[0][0] == "!" and is_valid_animal(parts[0][1:]):
+        elif parts[0][0] == "!" and is_valid_name(parts[0][1:]):
             animal = parts[0][1:]
             await send_pic(message.channel, animal, get_title(animal))
 

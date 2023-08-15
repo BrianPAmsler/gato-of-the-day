@@ -18,5 +18,10 @@
         "url": "https://randomfox.ca/floof/?ref=apilist.fun",
         "json_path": "image",
         "title": "Fox"
+    },
+    "shiba": {
+        "url": "https://shibe.online/api/shibes",
+        "json_path": "0",
+        "title": "Doge"
     }
 }

@@ -7,7 +7,7 @@ from time import strptime
 from discord.flags import Intents
 from pytz import timezone, utc
 from discord.ext import commands, tasks
-from gato_collector import get_gato, get_perro, get_carpincho, get_zorro
+from gato_collector import get_pic, is_valid_animal, get_title
 from os import path
 import requests
 from os import system
@@ -44,28 +44,13 @@ def ishi(url: str):
 async def ishihara_gato(channel, client):
     # downlaod gato
     print("Downloading image...")
-    await run_blocking(ishi, client, get_gato())
+    await run_blocking(ishi, client, get_pic("gato"))
 
     await channel.send(file=discord.File('output.png'))
 
-async def gato(channel, title="Gato of the Day"):
+async def send_pic(channel, animal, title):
     embed = discord.Embed(title=title, description="")
-    embed.set_image(url=get_gato())
-    await channel.send(embed=embed)
-
-async def perro(channel, title="Doggo of the Day"):
-    embed = discord.Embed(title=title, description="")
-    embed.set_image(url=get_perro())
-    await channel.send(embed=embed)
-
-async def carpincho(channel, title="Capy"):
-    embed = discord.Embed(title=title, description="")
-    embed.set_image(url=get_carpincho())
-    await channel.send(embed=embed)
-
-async def zorro(channel, title="Fox"):
-    embed = discord.Embed(title=title, description="")
-    embed.set_image(url=get_zorro())
+    embed.set_image(url=get_pic(animal))
     await channel.send(embed=embed)
 
 def to_utc(dt: datetime.datetime):
@@ -86,7 +71,7 @@ def make_cog(dt, channel: discord.TextChannel):
 
         @tasks.loop(time=time)
         async def my_task(self):
-            await gato(self.channel)
+            await send_pic(self.channel, "gato", "Gato of the Day")
 
     return GatoCog(channel)
 
@@ -173,16 +158,10 @@ def run_bot():
                     await channel.send("Channel registered for Gato of the Day!")
                 else:
                     await channel.send("Channel already registered for given time!")
-        elif parts[0] == "!gato":
-            await gato(message.channel, title="Gato")
-        elif parts[0] == "!perro":
-            await perro(message.channel, title="Doggo")
         elif parts[0] == "!ishigato":
             await ishihara_gato(message.channel, client)
-        elif parts[0] == "!carpincho":
-            await carpincho(message.channel)
-        elif parts[0] == "!zorro":
-            await zorro(message.channel)
+        elif is_valid_animal(parts[0]):
+            await send_pic(message.channel, parts[0], get_title(parts[0]))
 
     secret_file = open("discord-client-secret.txt", 'r')
     secret = secret_file.read().strip()

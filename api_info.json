@@ -1,0 +1,22 @@
+{
+    "gato": {
+        "url": "https://api.thecatapi.com/v1/images/search",
+        "json_path": "0/url",
+        "title": "Gato"
+    },
+    "perro": {
+        "url": "https://api.thedogapi.com/v1/images/search",
+        "json_path": "0/url",
+        "title": "Perro"
+    },
+    "carpincho": {
+        "url": "https://api.capy.lol/v1/capybara?json=true",
+        "json_path": "data/url",
+        "title": "Capy"
+    },
+    "zorro": {
+        "url": "https://randomfox.ca/floof/?ref=apilist.fun",
+        "json_path": "image",
+        "title": "Fox"
+    }
+}

@@ -160,7 +160,7 @@ def run_bot():
                     await channel.send("Channel already registered for given time!")
         elif parts[0] == "!ishigato":
             await ishihara_gato(message.channel, client)
-        elif is_valid_animal(parts[0]):
+        elif parts[0][0] == "!" and is_valid_animal(parts[0][1:]):
             await send_pic(message.channel, parts[0], get_title(parts[0]))
 
     secret_file = open("discord-client-secret.txt", 'r')

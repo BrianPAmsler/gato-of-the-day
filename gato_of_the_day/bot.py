@@ -54,7 +54,7 @@ async def ishihara(channel, client, animal):
     url = get_pic(animal)
     await run_blocking(ishi, client, url)
 
-    embed = discord.Embed(title="", description="")
+    embed = discord.Embed(title="Original", description="")
     embed.set_image(url=url)
     await channel.send(file=discord.File('output.png'), embed = embed)
 

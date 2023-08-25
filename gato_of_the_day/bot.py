@@ -51,7 +51,7 @@ async def ishihara(channel, client, animal):
     await channel.send("Generating image...")
     # downlaod gato
     print("Downloading image...")
-    url = '<||' + get_pic(animal) + '||>'
+    url = get_pic(animal)
     await run_blocking(ishi, client, url)
 
     embed = discord.Embed(title="", description="")

@@ -41,12 +41,20 @@ def ishi(url: str):
     print("Generating image...")
     system('image_processing -i "input.png" -o "output.png"')
 
-async def ishihara_gato(channel, client):
+    return fname
+
+async def ishihara(channel, client, animal):
+    if not is_valid_name(animal):
+        await channel.send("Invalid animal!")
+        return
+    
+    await channel.send("Generating image...")
     # downlaod gato
     print("Downloading image...")
-    await run_blocking(ishi, client, get_pic("gato"))
+    url = get_pic(animal)
+    await run_blocking(ishi, client, url)
 
-    await channel.send(file=discord.File('output.png'))
+    await channel.send(file0=discord.File('output.png'), url=url)
 
 async def send_pic(channel, animal, title):
     embed = discord.Embed(title=title, description="")
@@ -158,8 +166,10 @@ def run_bot():
                     await channel.send("Channel registered for Gato of the Day!")
                 else:
                     await channel.send("Channel already registered for given time!")
-        elif parts[0] == "!ishigato":
-            await ishihara_gato(message.channel, client)
+        elif parts[0] == "!ishihara":
+            if len(parts) >= 1:
+                animal = parts[1]
+                await ishihara(message.channel, client, animal)
         elif parts[0][0] == "!" and is_valid_name(parts[0][1:]):
             animal = parts[0][1:]
             await send_pic(message.channel, animal, get_title(animal))

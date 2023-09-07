@@ -130,6 +130,15 @@ def run_bot():
     intents = discord.Intents.default()
     intents.message_content = True
 
+    load_api_info()
+    
+    cache = ImageCache("ishicache", 10, generate_ishihara)
+
+    for animal in names():
+        cache.init_cache(animal)
+
+    cache.start()
+
     client = GatoClient(intents=intents)
 
     @client.event
@@ -177,7 +186,7 @@ def run_bot():
         elif parts[0] == "!ishihara":
             if len(parts) >= 1:
                 animal = parts[1]
-                await ishihara(message.channel, client, animal)
+                await ishihara(message.channel, client, animal, cache)
         elif parts[0][0] == "!" and is_valid_name(parts[0][1:]):
             animal = parts[0][1:]
             await send_pic(message.channel, animal, get_title(animal))
@@ -185,15 +194,6 @@ def run_bot():
     secret_file = open("discord-client-secret.txt", 'r')
     secret = secret_file.read().strip()
     secret_file.close()
-
-    load_api_info()
-    
-    cache = ImageCache("ishicache", 10, generate_ishihara)
-
-    for animal in names():
-        cache.init_cache(animal)
-
-    cache.start()
 
     try:
         client.run(secret)

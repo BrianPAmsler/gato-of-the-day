@@ -1,5 +1,6 @@
 import discord
 import datetime
+from gato_of_the_day.img_cache import ImageCache
 import persistence
 
 from typing import Any
@@ -7,7 +8,7 @@ from time import strptime
 from discord.flags import Intents
 from pytz import timezone, utc
 from discord.ext import commands, tasks
-from gato_collector import get_pic, is_valid_name, get_title, load_api_info
+from gato_collector import get_pic, is_valid_name, get_title, load_api_info, names
 from os import path
 import requests
 from os import system
@@ -43,20 +44,25 @@ def ishi(url: str):
 
     return fname
 
-async def ishihara(channel, client, animal):
+def generate_ishihara(animal: str):
+    url = get_pic(animal)
+    while url.endswith(".gif"):
+        print("IGNORED GIF")
+        url = get_pic(animal)
+    
+    ishi(url)
+
+    return "output.png"
+
+async def ishihara(channel, client, animal, cache: ImageCache):
     if not is_valid_name(animal):
         await channel.send("Invalid animal!")
         return
     
-    await channel.send("Generating image...")
     # downlaod gato
-    print("Downloading image...")
-    url = get_pic(animal)
-    await run_blocking(ishi, client, url)
+    tempfile = cache.get(animal)
 
-    embed = discord.Embed(title="Original", description="")
-    embed.set_image(url=url)
-    await channel.send(file=discord.File('output.png'), embed = embed)
+    await channel.send(file=discord.File(tempfile.file))
 
 async def send_pic(channel, animal, title):
     embed = discord.Embed(title=title, description="")
@@ -181,4 +187,15 @@ def run_bot():
     secret_file.close()
 
     load_api_info()
-    client.run(secret)
+    
+    cache = ImageCache("ishicache", 10, generate_ishihara)
+
+    for animal in names():
+        cache.init_cache(animal)
+
+    cache.start()
+
+    try:
+        client.run(secret)
+    except KeyboardInterrupt:
+        cache.kill()

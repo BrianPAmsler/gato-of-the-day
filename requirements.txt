@@ -6,3 +6,4 @@
 discord.py
 python-dateutil
 pytz
+requests

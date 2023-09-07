@@ -1,6 +1,6 @@
 import discord
 import datetime
-from gato_of_the_day.img_cache import ImageCache
+from img_cache import ImageCache
 import persistence
 
 from typing import Any

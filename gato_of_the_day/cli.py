@@ -9,7 +9,6 @@ Be creative! do whatever you want!
 """
 
 import bot
-import cache_test
 
 def main():  # pragma: no cover
     """
@@ -27,5 +26,4 @@ def main():  # pragma: no cover
         * List all available tasks
         * Run an application (Flask, FastAPI, Django, etc.)
     """
-    cache_test.test()
-    #bot.run_bot()
+    bot.run_bot()

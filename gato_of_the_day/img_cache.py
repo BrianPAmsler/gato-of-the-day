@@ -1,3 +1,4 @@
+from __future__ import annotations
 from threading import Thread
 from time import sleep
 from typing import Any, Callable
@@ -6,7 +7,6 @@ from shutil import copy
 from os.path import exists, isfile, isdir
 from os import PathLike, listdir, mkdir
 import uuid
-import asyncio
 
 class TempFile:
     instances = set()

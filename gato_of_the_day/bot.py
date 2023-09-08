@@ -186,7 +186,7 @@ def run_bot():
         elif parts[0] == "!ishihara":
             if len(parts) >= 1:
                 animal = parts[1]
-                await ishihara(message.channel, client, animal, cache)
+                await ishihara(message.channel, animal, cache)
         elif parts[0][0] == "!" and is_valid_name(parts[0][1:]):
             animal = parts[0][1:]
             await send_pic(message.channel, animal, get_title(animal))

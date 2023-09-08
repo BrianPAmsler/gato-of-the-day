@@ -1,3 +1,4 @@
+from __future__ import annotations
 import requests
 import json
 from json.scanner import py_make_scanner

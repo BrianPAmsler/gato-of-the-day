@@ -18,7 +18,7 @@ class ArrayAsDictDecoder(json.JSONDecoder):
         self.parse_array = parse_array
         self.scan_once = py_make_scanner(self)
 
-api_info = []
+api_info = {}
 
 def load_api_info():
     global api_info
@@ -29,7 +29,7 @@ def load_api_info():
 
     api_info = json.loads(data_string)
 
-def get_pic(name):
+def get_pic(name: str) -> str:
     if name not in api_info:
         return None
     
@@ -53,13 +53,13 @@ def get_pic(name):
     
     return obj
 
-def is_valid_name(name):
+def is_valid_name(name: str) -> bool:
     return name in api_info
 
-def names():
-    return api_info
+def names() -> list[str]:
+    return api_info.keys()
 
-def get_title(name):
+def get_title(name: str) -> str:
     if name not in api_info:
         return None
     

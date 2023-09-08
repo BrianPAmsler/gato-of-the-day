@@ -24,7 +24,7 @@ async def run_blocking(blocking_func: typing.Callable, client, *args, **kwargs) 
         blocking_func, *args, **kwargs)  # `run_in_executor` doesn't support kwargs, `functools.partial` does
     return await client.loop.run_in_executor(None, func)
 
-def ishi(url: str):
+def ishi(url: str) -> str:
     fname = "pre_input.jpg"
     if url.endswith(".png"):
         fname = "pre_input.png"
@@ -44,7 +44,7 @@ def ishi(url: str):
 
     return fname
 
-def generate_ishihara(animal: str):
+def generate_ishihara(animal: str) -> str:
     url = get_pic(animal)
     while url.endswith(".gif"):
         print("IGNORED GIF")
@@ -54,7 +54,7 @@ def generate_ishihara(animal: str):
 
     return "output.png"
 
-async def ishihara(channel, client, animal, cache: ImageCache):
+async def ishihara(channel: discord.TextChannel, animal: str, cache: ImageCache) -> None:
     if not is_valid_name(animal):
         await channel.send("Invalid animal!")
         return
@@ -64,17 +64,17 @@ async def ishihara(channel, client, animal, cache: ImageCache):
 
     await channel.send(file=discord.File(tempfile.file))
 
-async def send_pic(channel, animal, title):
+async def send_pic(channel: discord.TextChannel, animal: str, title: str) -> None:
     embed = discord.Embed(title=title, description="")
     embed.set_image(url=get_pic(animal))
     await channel.send(embed=embed)
 
-def to_utc(dt: datetime.datetime):
+def to_utc(dt: datetime.datetime) -> datetime.time:
     dt = dt.astimezone(utc)
 
     return datetime.time(hour=dt.hour, minute=dt.minute, tzinfo=utc)
 
-def make_cog(dt, channel: discord.TextChannel):
+def make_cog(dt, channel: discord.TextChannel) -> commands.Cog:
     time = to_utc(dt)
 
     class GatoCog(commands.Cog):
@@ -97,7 +97,7 @@ class GatoClient(discord.Client):
         self.channels = set()
         self.cogs = {}
 
-    def add_channel(self, channel: int, dt: datetime):
+    def add_channel(self, channel: int, dt: datetime) -> bool:
         tpl = (channel, dt)
 
         if tpl in self.channels:
@@ -111,7 +111,7 @@ class GatoClient(discord.Client):
 
         return True
 
-    def remove_channel(self, channel: int):
+    def remove_channel(self, channel: int) -> None:
         for i, tpl in list(enumerate(self.channels)):
             if tpl[0] == channel:
                 self.cogs[tpl].cog_unload()

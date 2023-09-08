@@ -1,13 +1,14 @@
 import json
 import dateutil.parser
+import bot
 
-def save_client(client, filename: str):
+def save_client(client: bot.GatoClient, filename: str) -> None:
     f = open(filename, "w")
     serialized = json.dumps(list(client.channels), default=str)
     f.write(serialized)
     f.close()
 
-def load_client(client, filename: str):
+def load_client(client: bot.GatoClient, filename: str) -> None:
     f = open(filename, "r")
     deserialized = json.loads(f.read())
     f.close()

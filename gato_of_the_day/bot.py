@@ -8,12 +8,42 @@ from time import strptime
 from discord.flags import Intents
 from pytz import timezone, utc
 from discord.ext import commands, tasks
-from gato_collector import get_pic, is_valid_name, get_title, load_api_info, names
 from os import path
 import requests
 from os import system
 import functools
 import typing
+
+class GatoClient(discord.Client):
+    def __init__(self, *, intents: Intents, **options: Any) -> None:
+        super().__init__(intents=intents, **options)
+        self.channels = set()
+        self.cogs = {}
+
+    def add_channel(self, channel: int, dt: datetime) -> bool:
+        tpl = (channel, dt)
+
+        if tpl in self.channels:
+            return False
+
+        ch = self.get_channel(channel)
+        self.cogs[tpl] = make_cog(dt, ch)
+        self.channels.add(tpl)
+
+        persistence.save_client(self, SAVE_FILE)
+
+        return True
+
+    def remove_channel(self, channel: int) -> None:
+        for i, tpl in list(enumerate(self.channels)):
+            if tpl[0] == channel:
+                self.cogs[tpl].cog_unload()
+                self.channels.remove(tpl)
+                del self.cogs[tpl]
+
+        persistence.save_client(self, SAVE_FILE)
+        
+from gato_collector import get_pic, is_valid_name, get_title, load_api_info, names
 
 SAVE_FILE = "channels.json"
 
@@ -90,35 +120,6 @@ def make_cog(dt, channel: discord.TextChannel) -> commands.Cog:
             await send_pic(self.channel, "gato", "Gato of the Day")
 
     return GatoCog(channel)
-
-class GatoClient(discord.Client):
-    def __init__(self, *, intents: Intents, **options: Any) -> None:
-        super().__init__(intents=intents, **options)
-        self.channels = set()
-        self.cogs = {}
-
-    def add_channel(self, channel: int, dt: datetime) -> bool:
-        tpl = (channel, dt)
-
-        if tpl in self.channels:
-            return False
-
-        ch = self.get_channel(channel)
-        self.cogs[tpl] = make_cog(dt, ch)
-        self.channels.add(tpl)
-
-        persistence.save_client(self, SAVE_FILE)
-
-        return True
-
-    def remove_channel(self, channel: int) -> None:
-        for i, tpl in list(enumerate(self.channels)):
-            if tpl[0] == channel:
-                self.cogs[tpl].cog_unload()
-                self.channels.remove(tpl)
-                del self.cogs[tpl]
-
-        persistence.save_client(self, SAVE_FILE)
 
 def to_dt(time: datetime.datetime, tz) -> datetime.datetime:
     dt = datetime.datetime.now()
